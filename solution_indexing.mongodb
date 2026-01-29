@@ -144,9 +144,11 @@ db.movies.find({ rating: { $gt: 8.0 } })
 
 /*Part 3*/
 
-db.movies.createIndex({ year: -1 })
-db.movies.find().sort({ year: -1 }).explain("executionStats")
+db.movies.createIndex({ year: -1 });
 
+db.movies.find()
+  .sort({ year: -1 })
+  .explain("executionStats");
 
 /*Part 4*/
 
