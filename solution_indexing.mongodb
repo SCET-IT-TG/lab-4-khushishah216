@@ -1,1 +1,11 @@
+use demoDB
+
+db.users.drop()
+
+db.users.insertMany([
+  { name: "Alice", email: "alice@mail.com", age: 25, status: "active", bio: "MongoDB developer" },
+  { name: "Bob", email: "bob@mail.com", age: 30, status: "inactive", bio: "Backend engineer" },
+  { name: "Charlie", email: "charlie@mail.com", age: 35, status: "active", bio: "Database and indexing expert" },
+  { name: "David", email: "david@mail.com", age: 28, status: "active", bio: "Full stack developer" }
+])
 
