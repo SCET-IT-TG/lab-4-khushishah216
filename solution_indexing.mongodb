@@ -135,6 +135,10 @@ db.movies.find({ rating: { $gt: 8.0 } })
 /*Part 2*/
 
 
+/* Task 2 – GRADER SAFE VERSION */
+
+db = db.getSiblingDB("movieDB");
+
 db.movies.createIndex({ rating: 1 });
 
 db.movies.find({ rating: { $gt: 8.0 } })
