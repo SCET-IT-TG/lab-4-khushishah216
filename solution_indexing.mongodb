@@ -1,11 +1,64 @@
-use demoDB
+use indexDemoDB
 
-db.users.drop()
+// Clean start
+db.products.drop()
 
-db.users.insertMany([
-  { name: "Alice", email: "alice@mail.com", age: 25, status: "active", bio: "MongoDB developer" },
-  { name: "Bob", email: "bob@mail.com", age: 30, status: "inactive", bio: "Backend engineer" },
-  { name: "Charlie", email: "charlie@mail.com", age: 35, status: "active", bio: "Database and indexing expert" },
-  { name: "David", email: "david@mail.com", age: 28, status: "active", bio: "Full stack developer" }
+// Insert sample data
+db.products.insertMany([
+  { name: "Laptop", category: "Electronics", price: 800, description: "High performance laptop" },
+  { name: "Phone", category: "Electronics", price: 500, description: "Smartphone with great camera" },
+  { name: "Tablet", category: "Electronics", price: 300, description: "Portable tablet device" },
+  { name: "Chair", category: "Furniture", price: 100, description: "Comfortable wooden chair" },
+  { name: "Desk", category: "Furniture", price: 250, description: "Office work desk" }
 ])
+
+/* -------------------------------------------------
+   1. Query WITHOUT index (Collection Scan)
+------------------------------------------------- */
+db.products.find({ category: "Electronics" })
+  .explain("executionStats")
+
+/* -------------------------------------------------
+   2. Single Field Index
+------------------------------------------------- */
+db.products.createIndex({ category: 1 })
+
+db.products.find({ category: "Electronics" })
+  .explain("executionStats")
+
+/* -------------------------------------------------
+   3. Compound Index
+------------------------------------------------- */
+db.products.createIndex({ category: 1, price: -1 })
+
+db.products.find({ category: "Electronics" })
+  .sort({ price: -1 })
+  .explain("executionStats")
+
+/* -------------------------------------------------
+   4. Equality + Range using Compound Index
+------------------------------------------------- */
+db.products.find({
+  category: "Electronics",
+  price: { $gte: 400 }
+}).explain("executionStats")
+
+/* -------------------------------------------------
+   5. Text Index
+------------------------------------------------- */
+db.products.createIndex({
+  name: "text",
+  description: "text"
+})
+
+db.products.find({
+  $text: { $search: "laptop performance" }
+}).explain("executionStats")
+
+/* -------------------------------------------------
+   6. Compare Query Plans
+------------------------------------------------- */
+db.products.find({ price: { $gt: 200 } })
+  .explain("queryPlanner")
+
 
